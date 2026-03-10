@@ -16,6 +16,8 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const BOOKING_LINK =
   "https://book.servicem8.com/request_service_online_booking?strVendorUUID=ee625934-fc93-4244-a9a2-218fd1923f7b#9b9e5306-c45d-404f-bc4b-221306b5df4b";
 
@@ -176,8 +178,6 @@ function extractLeadFields(historyText) {
   return lead;
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 app.get("/", (req, res) => {
   res.json({ ok: true, message: "A&Y chatbot backend is running." });
 });
@@ -255,12 +255,12 @@ app.post("/api/lead", async (req, res) => {
       <p><a href="${BOOKING_LINK}">Open ServiceM8 Booking</a></p>
     `;
 
-  await resend.emails.send({
-  from: "A&Y Appliances <onboarding@resend.dev>",
-  to: [LEAD_EMAIL],
-  subject,
-  html,
-});
+    await resend.emails.send({
+      from: "A&Y Appliances <onboarding@resend.dev>",
+      to: [LEAD_EMAIL],
+      subject,
+      html,
+    });
 
     res.json({ ok: true });
   } catch (error) {
