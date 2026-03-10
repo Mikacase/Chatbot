@@ -255,12 +255,12 @@ app.post("/api/lead", async (req, res) => {
       <p><a href="${BOOKING_LINK}">Open ServiceM8 Booking</a></p>
     `;
 
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: LEAD_EMAIL,
-      subject,
-      html,
-    });
+  await resend.emails.send({
+  from: "A&Y Appliances <onboarding@resend.dev>",
+  to: [LEAD_EMAIL],
+  subject,
+  html,
+});
 
     res.json({ ok: true });
   } catch (error) {
