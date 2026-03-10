@@ -49,11 +49,11 @@ const SERVICE_AREAS = [
   "thousand oaks",
   "van nuys",
   "west hollywood",
-  "woodland hills"
+  "woodland hills",
 ];
 
 function isLikelyInServiceArea(location = "") {
-  const value = String(location || "").toLowerCase();
+  const value = String(location).toLowerCase();
   return SERVICE_AREAS.some((city) => value.includes(city));
 }
 
@@ -96,7 +96,7 @@ function extractLeadFields(historyText) {
     zip_code: "",
     model_number: "",
     address: "",
-    preferred_time: ""
+    preferred_time: "",
   };
 
   const lines = historyText.split("\n");
@@ -127,7 +127,7 @@ function extractLeadFields(historyText) {
         "cooktop",
         "microwave",
         "ice maker",
-        "wine cooler"
+        "wine cooler",
       ];
       const hit = appliances.find((a) => lower.includes(a));
       if (hit) lead.appliance_type = hit;
@@ -151,7 +151,7 @@ function extractLeadFields(historyText) {
         "dacor",
         "monogram",
         "jennair",
-        "fisher paykel"
+        "fisher paykel",
       ];
       const hit = brands.find((b) => lower.includes(b));
       if (hit) lead.brand = hit;
@@ -180,8 +180,8 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  }
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
 });
 
 app.get("/", (req, res) => {
@@ -195,12 +195,12 @@ app.post("/api/chat", async (req, res) => {
     const input = [
       { role: "system", content: systemPrompt },
       ...history,
-      { role: "user", content: message }
+      { role: "user", content: message },
     ];
 
     const response = await client.responses.create({
       model: "gpt-5",
-      input
+      input,
     });
 
     const reply =
@@ -212,34 +212,14 @@ app.post("/api/chat", async (req, res) => {
       actions: {
         booking_link: BOOKING_LINK,
         call_link: BUSINESS_PHONE_LINK,
-        sms_link: BUSINESS_SMS_LINK
-      }
+        sms_link: BUSINESS_SMS_LINK,
+      },
     });
   } catch (error) {
     console.error("Chat error:", error);
     res.status(500).json({
       reply:
-        "Sorry, something went wrong. Please call, text, or book online and our office will help you."
-    });
-  }
-});
-    const reply =
-      response.output_text ||
-      "Please share the appliance type, brand, and your city.";
-
-    res.json({
-      reply,
-      actions: {
-        booking_link: BOOKING_LINK,
-        call_link: BUSINESS_PHONE_LINK,
-        sms_link: BUSINESS_SMS_LINK
-      }
-    });
-  } catch (error) {
-    console.error("Chat error:", error);
-    res.status(500).json({
-      reply:
-        "Sorry, something went wrong. Please call, text, or book online and our office will help you."
+        "Sorry, something went wrong. Please call, text, or book online and our office will help you.",
     });
   }
 });
@@ -285,7 +265,7 @@ app.post("/api/lead", async (req, res) => {
       from: process.env.GMAIL_USER,
       to: LEAD_EMAIL,
       subject,
-      html
+      html,
     });
 
     res.json({ ok: true });
