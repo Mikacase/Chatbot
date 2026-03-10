@@ -198,10 +198,10 @@ app.post("/api/chat", async (req, res) => {
       { role: "user", content: message }
     ];
 
-    const response = await client.responses.create({
-      model: "gpt-5",
-      input,
-      temperature: 0.3
+   const response = await client.responses.create({
+  model: "gpt-5",
+  input
+});
     });
 
     const reply =
