@@ -198,12 +198,31 @@ app.post("/api/chat", async (req, res) => {
       { role: "user", content: message }
     ];
 
-   const response = await client.responses.create({
-  model: "gpt-5",
-  input
-});
+    const response = await client.responses.create({
+      model: "gpt-5",
+      input
     });
 
+    const reply =
+      response.output_text ||
+      "Please share the appliance type, brand, and your city.";
+
+    res.json({
+      reply,
+      actions: {
+        booking_link: BOOKING_LINK,
+        call_link: BUSINESS_PHONE_LINK,
+        sms_link: BUSINESS_SMS_LINK
+      }
+    });
+  } catch (error) {
+    console.error("Chat error:", error);
+    res.status(500).json({
+      reply:
+        "Sorry, something went wrong. Please call, text, or book online and our office will help you."
+    });
+  }
+});
     const reply =
       response.output_text ||
       "Please share the appliance type, brand, and your city.";
